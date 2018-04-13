@@ -1,22 +1,27 @@
-﻿using AWen.TaskManager.Services.Core;
+﻿using AWen.TaskManager.Core.BLL;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Topshelf;
 
 namespace AWen.TaskManager.Services
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            //log4net.Config.XmlConfigurator.ConfigureAndWatch(new FileInfo(AppDomain.CurrentDomain.BaseDirectory + "log4net.config"));
-           var host= HostFactory.New(a => {
-               a.Service<TaskServicesRunner>();
+            TaskInfoService _TaskInfoService = new TaskInfoService();
+            _TaskInfoService.Add(new TaskManager.Core.Model.TB_TM_TaskInfo()
+            {
+                TaskId = Guid.NewGuid(),
+                TaskName = "TEST",
+                //CreatedDateTime = DateTime.Now,
+                //LastUpdatedDateTime = DateTime.Now,
+                //LastRunTime = DateTime.Now,
+                //NextRunTime=DateTime.Now
             });
-           host.Run();
+            //log4net.Config.XmlConfigurator.ConfigureAndWatch(new FileInfo(AppDomain.CurrentDomain.BaseDirectory + "log4net.config"));
+            //var host= HostFactory.New(a => {
+            //    a.Service<TaskServicesRunner>();
+            // });
+            //host.Run();
         }
     }
 }

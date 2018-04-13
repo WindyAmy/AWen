@@ -4,17 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{29C23F01-951E-4A9B-864F-84109E5C0F95}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{96252E38-7295-4FC9-A947-50E5F779DCC6}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AWen.TaskManager.Services</RootNamespace>
-    <AssemblyName>AWen.TaskManager.Services</AssemblyName>
+    <RootNamespace>AWen.TaskManager.Core</RootNamespace>
+    <AssemblyName>AWen.TaskManager.Core</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -33,34 +30,47 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Dapper, Version=1.40.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.1.42\lib\net45\Dapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Dapper.SimpleCRUD, Version=1.13.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.SimpleCRUD.1.13.0\lib\net45\Dapper.SimpleCRUD.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Topshelf, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b800c4cfcdeea87b, processorArchitecture=MSIL">
-      <HintPath>..\packages\Topshelf.4.0.4\lib\net452\Topshelf.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\TaskServicesRunner.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="BLL\TaskInfoService.cs" />
+    <Compile Include="BLL\TaskLogService.cs" />
+    <Compile Include="Common\Database.cs" />
+    <Compile Include="Common\TaskState.cs" />
+    <Compile Include="DAL\BaseRepository.cs" />
+    <Compile Include="DAL\GuidRepository.cs" />
+    <Compile Include="Interface\IBaseRepository.cs" />
+    <Compile Include="Interface\IBLL.cs" />
+    <Compile Include="Interface\IDAL.cs" />
+    <Compile Include="DAL\ITaskInfoRepository.cs" />
+    <Compile Include="DAL\ITaskLogRepository.cs" />
+    <Compile Include="Model\Base\BaseModel.cs" />
+    <Compile Include="Interface\IModel.cs" />
+    <Compile Include="Model\Base\PagerModel.cs" />
+    <Compile Include="Model\TB_TM_TaskInfo.cs" />
+    <Compile Include="Model\TB_TM_TaskLog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Config\log4net.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\AWen.TaskManager.Core\AWen.TaskManager.Core.csproj">
-      <Project>{96252e38-7295-4fc9-a947-50e5f779dcc6}</Project>
-      <Name>AWen.TaskManager.Core</Name>
-    </ProjectReference>
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

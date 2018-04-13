@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AWen.TaskManager", "AWen.Ta
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWen.TaskManager.Services", "AWen.TaskManager.Services\AWen.TaskManager.Services.csproj", "{29C23F01-951E-4A9B-864F-84109E5C0F95}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWen.TaskManager.Core", "AWen.TaskManager.Core\AWen.TaskManager.Core.csproj", "{96252E38-7295-4FC9-A947-50E5F779DCC6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,11 +19,16 @@ Global
 		{29C23F01-951E-4A9B-864F-84109E5C0F95}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{29C23F01-951E-4A9B-864F-84109E5C0F95}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{29C23F01-951E-4A9B-864F-84109E5C0F95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96252E38-7295-4FC9-A947-50E5F779DCC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96252E38-7295-4FC9-A947-50E5F779DCC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96252E38-7295-4FC9-A947-50E5F779DCC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96252E38-7295-4FC9-A947-50E5F779DCC6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{29C23F01-951E-4A9B-864F-84109E5C0F95} = {BCD86578-2B21-4BA1-A6E5-336EC069B18F}
+		{96252E38-7295-4FC9-A947-50E5F779DCC6} = {BCD86578-2B21-4BA1-A6E5-336EC069B18F}
 	EndGlobalSection
 EndGlobal
