@@ -14,21 +14,24 @@
 
 using AWen.TaskManager.Core.Interface;
 using AWen.TaskManager.Core.Model.Base;
+using Dapper;
 using System;
 
 namespace AWen.TaskManager.Core.Model
 {
     public class TB_TM_TaskLog : BaseModel, IModel
     {
-        /// <summary>
-        /// TaskID
-        /// </summary>
-        public Guid TaskLogId { get; set; }
 
         /// <summary>
         /// TaskID
         /// </summary>
-        public Guid TaskId { get; set; }
+        [Key]
+        public int TaskLogId { get; set; }
+
+        /// <summary>
+        /// TaskID
+        /// </summary>
+        public int TaskId { get; set; }
 
         /// <summary>
         /// Task名称

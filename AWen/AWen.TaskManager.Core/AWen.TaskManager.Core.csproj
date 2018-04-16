@@ -51,9 +51,10 @@
     <Compile Include="BLL\TaskInfoService.cs" />
     <Compile Include="BLL\TaskLogService.cs" />
     <Compile Include="Common\Database.cs" />
-    <Compile Include="Common\TaskState.cs" />
+    <Compile Include="Common\TaskEnum.cs" />
     <Compile Include="DAL\BaseRepository.cs" />
     <Compile Include="DAL\GuidRepository.cs" />
+    <Compile Include="DAL\IntRepository.cs" />
     <Compile Include="Interface\IBaseRepository.cs" />
     <Compile Include="Interface\IBLL.cs" />
     <Compile Include="Interface\IDAL.cs" />

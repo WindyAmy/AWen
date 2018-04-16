@@ -16,7 +16,7 @@ using AWen.TaskManager.Core.DAL;
 using AWen.TaskManager.Core.Interface;
 namespace AWen.TaskManager.Core.BLL
 {
-    public class TaskLogRepository : GuidRepository<Model.TB_TM_TaskLog>, ITaskLogRepository
+    public class TaskLogService : IntRepository<Model.TB_TM_TaskLog>, ITaskLogRepository
     {
     }
 }

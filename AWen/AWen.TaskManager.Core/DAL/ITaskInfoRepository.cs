@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 
 namespace AWen.TaskManager.Core.DAL
 {
-    public interface ITaskInfoRepository : IBaseRepository<Model.TB_TM_TaskInfo, System.Guid>
+    public interface ITaskInfoRepository : IBaseRepository<Model.TB_TM_TaskInfo, int>
     {
     }
 }

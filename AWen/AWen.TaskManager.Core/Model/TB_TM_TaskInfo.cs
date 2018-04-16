@@ -25,7 +25,7 @@ namespace AWen.TaskManager.Core.Model
         /// TaskID
         /// </summary>
         [Key]
-        public string TaskId { get; set; }
+        public int TaskId { get; set; }
 
         /// <summary>
         /// Task类型

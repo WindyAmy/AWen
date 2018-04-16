@@ -15,7 +15,7 @@
 using AWen.TaskManager.Core.Interface;
 namespace AWen.TaskManager.Core.DAL
 {
-    public interface ITaskLogRepository:IBaseRepository<Model.TB_TM_TaskLog,System.Guid>
+    public interface ITaskLogRepository:IBaseRepository<Model.TB_TM_TaskLog,int>
     {
     }
 }

@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 
 namespace AWen.TaskManager.Core.BLL
 {
-    public class TaskInfoService : GuidRepository<Model.TB_TM_TaskInfo>, ITaskInfoRepository 
+    public class TaskInfoService : IntRepository<Model.TB_TM_TaskInfo>, ITaskInfoRepository 
     {
 
     }

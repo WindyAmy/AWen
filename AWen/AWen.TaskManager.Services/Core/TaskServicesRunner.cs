@@ -22,15 +22,19 @@ namespace AWen.TaskManager.Services.Core
 {
     public class TaskServicesRunner : ServiceControl, ServiceSuspend
     {
+        //任务调度器
         public IScheduler scheduler;
 
         public TaskServicesRunner()
         {
+            //获取默认任务调度器
             scheduler = StdSchedulerFactory.GetDefaultScheduler().Result;
-            var job = JobBuilder.Create<MajorTask>().Build();
+            var job = JobBuilder.Create<MajorTask>()
+                .WithIdentity("AWen.MajorTaskName", "AWen.MajorTaskGroup")
+                .Build();
             var trigger = TriggerBuilder.Create().StartNow().WithSimpleSchedule(a =>
             {
-                a.WithIntervalInSeconds(1);
+                a.WithIntervalInSeconds(10);
                 a.RepeatForever();
             }).Build();
 
@@ -39,7 +43,7 @@ namespace AWen.TaskManager.Services.Core
 
         public bool Start(HostControl hostControl)
         {
-            Console.WriteLine("Start");
+            //Console.WriteLine("Start");
             scheduler.Start();
             return true;
             //throw new NotImplementedException();
