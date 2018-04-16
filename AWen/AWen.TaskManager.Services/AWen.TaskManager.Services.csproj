@@ -53,7 +53,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\HttpHelper.cs" />
     <Compile Include="Core\MajorTask.cs" />
+    <Compile Include="Core\ProxyTask.cs" />
     <Compile Include="Core\QuartzManager.cs" />
     <Compile Include="Core\TaskServicesRunner.cs" />
     <Compile Include="Program.cs" />

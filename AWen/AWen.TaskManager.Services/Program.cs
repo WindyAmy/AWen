@@ -17,7 +17,9 @@ namespace AWen.TaskManager.Services
                 a.Service<TaskServicesRunner>();
             });
             host.Run();
-           
+            //var Response = HttpHelper.CreatePostHttpResponse("http://localhost:22960/WebForm1.aspx", null);
+            //System.Console.WriteLine(HttpHelper.GetResponseString(Response));
+            //Console.ReadLine();
         }
     }
 }

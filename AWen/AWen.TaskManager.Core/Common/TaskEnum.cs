@@ -48,14 +48,14 @@ namespace AWen.TaskManager.Core.Common
          /// <summary>
          /// 请求url的任务
          /// </summary>
-         url,
+         Url,
          /// <summary>
          /// exe可执行文件的任务
          /// </summary>
-         exe,
+         Exe,
          /// <summary>
          /// 实现ijob接口dll任务
          /// </summary>
-         ijobdll
+         IJob
      }
 }

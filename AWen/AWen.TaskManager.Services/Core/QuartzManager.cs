@@ -25,6 +25,8 @@ namespace AWen.TaskManager.Services.Core
 {
     public class QuartzManager
     {
+        #region 任务主管理
+
         /// <summary>
         ///  任务管理
         /// </summary>
@@ -82,11 +84,17 @@ namespace AWen.TaskManager.Services.Core
                         {
                             //添加job
                             ScheduleJob(scheduler, taskModel);
+                            taskModel.State = (int)TaskState.Running;
+                            _TaskInfoService.Update(taskModel);
                         }
                     }
                 }
             }
         }
+
+        #endregion 任务主管理
+
+        #region Job调度
 
         /// <summary>
         /// Job调度
@@ -97,16 +105,53 @@ namespace AWen.TaskManager.Services.Core
         {
             if (ValidExpression(taskInfo.CronExpression))
             {
-                Type type = GetClassInfo(taskInfo.AssemblyName, taskInfo.ClassName);
-                if (type != null)
+                if (taskInfo.TaskType == TaskType.IJob.ToString())
                 {
-                    var job = JobBuilder.Create(type)
-                                        .WithIdentity(taskInfo.TaskId + "TaskName", taskInfo.TaskId + "TaskGroup")
+                    #region IJob Job
+
+                    Type type = GetClassInfo(taskInfo.AssemblyName, taskInfo.ClassName);
+                    if (type != null)
+                    {
+                        var job = JobBuilder.Create(type)
+                                            .WithIdentity(taskInfo.TaskId + "TaskName", taskInfo.TaskId + "TaskGroup")
+                            //.WithDescription(taskInfo.Description)//任务描述
+                                            .Build();
+                        job.JobDataMap.Add("TaskId", taskInfo.TaskName);
+                        job.JobDataMap.Add("TaskName", taskInfo.TaskName);
+                        job.JobDataMap.Add("TaskType", taskInfo.TaskType);
+                        job.JobDataMap.Add("Parameters", taskInfo.TaskArgs);
+                        job.JobDataMap.Add("AssemblyName", taskInfo.AssemblyName);
+                        job.JobDataMap.Add("ClassName", taskInfo.ClassName);
+                        var trigger = TriggerBuilder.Create()
+                            .WithIdentity(taskInfo.TaskId + "TriggerName", taskInfo.TaskId + "TriggerGroup")
+                            //.WithDescription(taskInfo.Description)//任务描述
+                            .StartNow()
+                            .WithCronSchedule(taskInfo.CronExpression)
+                            .Build();
+                        scheduler.ScheduleJob(job, trigger);
+                    }
+                    else
+                    {
+                        WriteTaskErrorLog(taskInfo, "AssemblyName:" + taskInfo.AssemblyName + ",ClassName:" + taskInfo.ClassName + "无效，无法启动该任务");
+                    }
+
+                    #endregion IJob Job
+                }
+                else if (taskInfo.TaskType == TaskType.Exe.ToString() || taskInfo.TaskType == TaskType.Url.ToString())
+                {
+                    #region Exe/Url Job
+
+                    var job = JobBuilder.Create<ProxyTask>()
+                                           .WithIdentity(taskInfo.TaskId + "TaskName", taskInfo.TaskId + "TaskGroup")
                         //.WithDescription(taskInfo.Description)//任务描述
-                                        .Build();
-                    job.JobDataMap.Add("Parameters", taskInfo.TaskArgs);
+                                           .Build();
+                    job.JobDataMap.Add("TaskId", taskInfo.TaskName);
                     job.JobDataMap.Add("TaskName", taskInfo.TaskName);
                     job.JobDataMap.Add("TaskType", taskInfo.TaskType);
+                    job.JobDataMap.Add("AssemblyName", taskInfo.AssemblyName);
+                    job.JobDataMap.Add("ClassName", taskInfo.ClassName);
+                    job.JobDataMap.Add("TaskArgs", taskInfo.TaskArgs);
+
                     var trigger = TriggerBuilder.Create()
                         .WithIdentity(taskInfo.TaskId + "TriggerName", taskInfo.TaskId + "TriggerGroup")
                         //.WithDescription(taskInfo.Description)//任务描述
@@ -114,35 +159,46 @@ namespace AWen.TaskManager.Services.Core
                         .WithCronSchedule(taskInfo.CronExpression)
                         .Build();
                     scheduler.ScheduleJob(job, trigger);
+
+                    #endregion Exe/Url Job
                 }
                 else
                 {
-                    new TaskLogService().Add(new TaskManager.Core.Model.TB_TM_TaskLog()
-                                {
-                                    TaskId = taskInfo.TaskId,
-                                    TaskName = taskInfo.TaskName,
-                                    CreatedDateTime = DateTime.Now,
-                                    ExecutionTime = DateTime.Now,
-                                    RunLog = taskInfo.AssemblyName + taskInfo.ClassName + "无效，无法启动该任务"
-                                });
-                    taskInfo.State = (int)TaskState.Error;
-                    new TaskInfoService().Update(taskInfo);
+                    WriteTaskErrorLog(taskInfo, taskInfo.TaskType + ":不是正确的TaskType类型,无法启动该任务");
                 }
             }
             else
             {
-                new TaskLogService().Add(new TaskManager.Core.Model.TB_TM_TaskLog()
-                                 {
-                                     TaskId = taskInfo.TaskId,
-                                     TaskName = taskInfo.TaskName,
-                                     CreatedDateTime = DateTime.Now,
-                                     ExecutionTime = DateTime.Now,
-                                     RunLog = taskInfo.CronExpression + "不是正确的Cron表达式,无法启动该任务"
-                                 });
-                taskInfo.State = (int)TaskState.Error;
-                new TaskInfoService().Update(taskInfo);
+                WriteTaskErrorLog(taskInfo, taskInfo.CronExpression + ":不是正确的Cron表达式,无法启动该任务");
             }
         }
+
+        #endregion Job调度
+
+        #region 任务失败写log表,并调整任务状态是Error
+
+        /// <summary>
+        /// 任务失败写log表,并调整任务状态是Error
+        /// </summary>
+        /// <param name="taskInfo"></param>
+        /// <param name="runLog"></param>
+        private void WriteTaskErrorLog(TB_TM_TaskInfo taskInfo, string runLog)
+        {
+            new TaskLogService().Add(new TaskManager.Core.Model.TB_TM_TaskLog()
+            {
+                TaskId = taskInfo.TaskId,
+                TaskName = taskInfo.TaskName,
+                CreatedDateTime = DateTime.Now,
+                ExecutionTime = DateTime.Now,
+                RunLog = runLog
+            });
+            taskInfo.State = (int)TaskState.Error;
+            new TaskInfoService().Update(taskInfo);
+        }
+
+        #endregion 任务失败写log表,并调整任务状态是Error
+
+        #region 从程序集中加载指定类
 
         /// <summary>
         /// 从程序集中加载指定类
@@ -165,6 +221,10 @@ namespace AWen.TaskManager.Services.Core
             }
             return type;
         }
+
+        #endregion 从程序集中加载指定类
+
+        #region 获取文件的绝对路径
 
         /// <summary>
         ///  获取文件的绝对路径
@@ -192,6 +252,10 @@ namespace AWen.TaskManager.Services.Core
             }
         }
 
+        #endregion 获取文件的绝对路径
+
+        #region 校验字符串是否为正确的Cron表达式
+
         /// <summary>
         /// 校验字符串是否为正确的Cron表达式
         /// </summary>
@@ -201,5 +265,7 @@ namespace AWen.TaskManager.Services.Core
         {
             return CronExpression.IsValidExpression(cronExpression);
         }
+
+        #endregion 校验字符串是否为正确的Cron表达式
     }
 }
