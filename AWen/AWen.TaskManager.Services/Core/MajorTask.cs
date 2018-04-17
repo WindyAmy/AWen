@@ -1,7 +1,4 @@
-﻿using AWen.TaskManager.Core.BLL;
-using AWen.TaskManager.Core.Common;
-using Quartz;
-using System;
+﻿using Quartz;
 
 /********************************************************************
  * 命名空间: AWen.TaskManager.Services.Core
@@ -17,19 +14,13 @@ using System;
  * 其他说明:
 *********************************************************************/
 
-using System.Threading.Tasks;
-
 namespace AWen.TaskManager.Services.Core
 {
     public class MajorTask : IJob
     {
-        public Task Execute(IJobExecutionContext context)
+        public void Execute(IJobExecutionContext context)
         {
-            IScheduler _Scheduler = context.Scheduler;
-            new QuartzManager().TaskManager(_Scheduler);
-            return null;
+            new QuartzManager().TaskManager(context.Scheduler);
         }
-
-        
     }
 }
