@@ -32,7 +32,7 @@ namespace AWen.TaskManager.Services.Core
         ///  任务管理
         /// </summary>
         /// <param name="scheduler"></param>
-        public  void TaskManager(IScheduler scheduler)
+        public static  void TaskManager(IScheduler scheduler)
         {
             var taskList = new TaskInfoService().GetModelList("WHERE IsDelete=0", null);
             if (taskList != null)
@@ -81,7 +81,7 @@ namespace AWen.TaskManager.Services.Core
         /// </summary>
         /// <param name="scheduler"></param>
         /// <param name="taskInfo"></param>
-        public  bool AddScheduleJob(IScheduler scheduler, TB_TM_TaskInfo taskInfo)
+        public static bool AddScheduleJob(IScheduler scheduler, TB_TM_TaskInfo taskInfo)
         {
             bool addFlag = false;
             if (ValidExpression(taskInfo.CronExpression))
@@ -111,6 +111,9 @@ namespace AWen.TaskManager.Services.Core
                         var trigger = TriggerBuilder.Create()
                             .WithIdentity("TriggerName." + taskInfo.TaskId, "TriggerGroup." + taskInfo.TaskId)
                             .WithDescription(taskInfo.Description)//任务描述
+                            //FirstRunTime 就按照这个时间直接，否则立刻执行
+                            .StartAt(taskInfo.FirstRunTime.HasValue?taskInfo.FirstRunTime.Value:DateTime.Now)
+                            .WithPriority(taskInfo.Priority + 5)//5是trigger默认优先级
                             //.StartNow()
                             .WithCronSchedule(taskInfo.CronExpression)
                             .Build();
@@ -143,7 +146,7 @@ namespace AWen.TaskManager.Services.Core
         /// </summary>
         /// <param name="taskInfo"></param>
         /// <param name="runLog"></param>
-        private  void WriteTaskLog(TB_TM_TaskInfo taskInfo, string runLog, TaskState taskState)
+        private static void WriteTaskLog(TB_TM_TaskInfo taskInfo, string runLog, TaskState taskState)
         {
             new TaskLogService().Add(new TaskManager.Core.Model.TB_TM_TaskLog()
             {
@@ -168,7 +171,7 @@ namespace AWen.TaskManager.Services.Core
         /// <param name="assemblyName">含后缀的程序集名</param>
         /// <param name="className">含命名空间完整类名</param>
         /// <returns></returns>
-        private  Type GetClassInfo(string assemblyName, string className)
+        private static Type GetClassInfo(string assemblyName, string className)
         {
             Type type = null;
             try
@@ -193,7 +196,7 @@ namespace AWen.TaskManager.Services.Core
         /// </summary>
         /// <param name="relativePath">相对路径</param>
         /// <returns></returns>
-        public  string GetAbsolutePath(string relativePath)
+        public static string GetAbsolutePath(string relativePath)
         {
             if (string.IsNullOrEmpty(relativePath))
             {
@@ -223,7 +226,7 @@ namespace AWen.TaskManager.Services.Core
         /// </summary>
         /// <param name="cronExpression">带校验表达式</param>
         /// <returns></returns>
-        public  bool ValidExpression(string cronExpression)
+        public static bool ValidExpression(string cronExpression)
         {
             return CronExpression.IsValidExpression(cronExpression);
         }

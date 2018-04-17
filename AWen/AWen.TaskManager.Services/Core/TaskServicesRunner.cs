@@ -1,10 +1,10 @@
 ﻿using AWen.TaskManager.Core.BLL;
 using AWen.TaskManager.Core.Common;
 using AWen.TaskManager.Core.Model;
-using Common.Logging;
 using Newtonsoft.Json;
 using Quartz;
 using Quartz.Impl;
+
 /********************************************************************
  * 命名空间: AWen.TaskManager.Services.Core
 
@@ -20,13 +20,14 @@ using Quartz.Impl;
 *********************************************************************/
 
 using System;
+using System.Collections.Specialized;
 using Topshelf;
 
 namespace AWen.TaskManager.Services.Core
 {
     public class TaskServicesRunner : ServiceControl, ServiceSuspend
     {
-       // private readonly ILog _logger = LogManager.GetLogger(typeof(TaskServicesRunner));
+        // private readonly ILog _logger = LogManager.GetLogger(typeof(TaskServicesRunner));
         //任务调度器
         private readonly IScheduler scheduler;
 
@@ -37,6 +38,7 @@ namespace AWen.TaskManager.Services.Core
         public TaskServicesRunner()
         {
             //获取默认任务调度器
+
             scheduler = StdSchedulerFactory.GetDefaultScheduler();
 
             majorTaskInfo = new TB_TM_TaskInfo()
@@ -71,7 +73,7 @@ namespace AWen.TaskManager.Services.Core
         {
             scheduler.Start();
             WriteTaskLog("调度器启动--Start");
-           // _logger.Info(string.Format("{0} Start---------------------------", ServiceName));
+            // _logger.Info(string.Format("{0} Start---------------------------", ServiceName));
             return true;
         }
 

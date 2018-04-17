@@ -68,6 +68,11 @@ namespace AWen.TaskManager.Core.Model
         public string CronExpressionDescription { get; set; }
 
         /// <summary>
+        /// 第一次运行时间,空或者小于当前时间立刻运行
+        /// </summary>
+        public DateTime? FirstRunTime { get; set; }
+
+        /// <summary>
         /// 最后运行时间
         /// </summary>
         public DateTime? LastRunTime { get; set; }
@@ -91,6 +96,11 @@ namespace AWen.TaskManager.Core.Model
         /// 排序
         /// </summary>
         public int DisplayOrder { get; set; }
+
+        /// <summary>
+        ///  优先级
+        /// </summary>
+        public int Priority { get; set; }
 
         /// <summary>
         /// 创建人ID

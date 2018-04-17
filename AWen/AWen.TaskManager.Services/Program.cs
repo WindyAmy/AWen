@@ -1,8 +1,4 @@
-﻿using AWen.TaskManager.Core.BLL;
-using AWen.TaskManager.Services.Core;
-using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using AWen.TaskManager.Services.Core;
 using Topshelf;
 
 namespace AWen.TaskManager.Services
@@ -11,7 +7,6 @@ namespace AWen.TaskManager.Services
     {
         private static void Main(string[] args)
         {
-
             //log4net.Config.XmlConfigurator.ConfigureAndWatch(new FileInfo(AppDomain.CurrentDomain.BaseDirectory + "/Config/log4net.config"));
             var host = HostFactory.New(x =>
             {
@@ -24,15 +19,6 @@ namespace AWen.TaskManager.Services
                 x.EnablePauseAndContinue();
             });
             host.Run();
-           //var model= new TaskInfoService().GetModel(7);
-           //Dictionary<string, string> argsDic = new Dictionary<string, string>();
-           //argsDic.Add("KEY","agr1");
-           //argsDic.Add("WXC", "agr2");
-           //argsDic.Add("WWD", "wangwending");
-           //argsDic.Add("other", "this is other args");
-           //model.TaskArgs = Newtonsoft.Json.JsonConvert.SerializeObject(argsDic);
-           //new TaskInfoService().Update(model);
-            
         }
     }
 }

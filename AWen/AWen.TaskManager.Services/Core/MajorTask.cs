@@ -20,7 +20,8 @@ namespace AWen.TaskManager.Services.Core
     {
         public void Execute(IJobExecutionContext context)
         {
-            new QuartzManager().TaskManager(context.Scheduler);
+            //System.Console.WriteLine(System.Threading.Thread.CurrentThread.Name);
+            QuartzManager.TaskManager(context.Scheduler);
         }
     }
 }
