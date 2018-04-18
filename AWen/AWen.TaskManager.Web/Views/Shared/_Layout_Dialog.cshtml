@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - 任务管理平台</title>
+    <!--[if lt IE 8]>
+    <script>
+        alert('站点 不支持IE6-8，请使用谷歌、火狐等浏览器\n或360、QQ等国产浏览器的极速模式浏览本页面！');
+    </script>
+    <![endif]-->
+    <link href="~/Content/layui/css/layui.css" rel="stylesheet" />
+    <script src="~/Content/layui/layui.js"></script>
+    <script type="text/javascript">
+        //由于模块都一次性加载，因此不用执行 layui.use() 来加载对应模块，直接使用即可：
+        //; !function () {
+        //    var layer = layui.layer
+        //    , form = layui.form;
+
+        //    layer.msg('Hello World');
+        //}();
+
+        //JavaScript代码区域
+        layui.use('element', function () {
+            var element = layui.element;
+        });
+    </script>
+    @RenderSection("CSS", false)
+</head>
+<body>
+    <div class="layui-fluid" style="padding-top:10px">
+
+        @RenderBody()
+    </div>
+
+    @RenderSection("JS", required: false)
+</body>
+</html>
