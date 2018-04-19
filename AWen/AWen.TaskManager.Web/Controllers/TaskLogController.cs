@@ -17,9 +17,9 @@ namespace AWen.TaskManager.Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult List(int page,int limit)
+        public ActionResult List(int page, int limit, string search)
         {
-            var totaldata = _TaskLogService.GetModelList(" where IsDelete=0 ", null);
+            var totaldata = _TaskLogService.GetModelList(" where IsDelete=0 and TaskName Like '%" + search + "%'", null);
             var data = _TaskLogService.GetListPage(page, limit, " where IsDelete=0 ", "TaskLogId desc", null);
             var result = new ResponseResult() { success = true,count=totaldata.Count(), message = "数据获取成功", data = data };
             return Json(result, JsonRequestBehavior.AllowGet);
@@ -30,6 +30,29 @@ namespace AWen.TaskManager.Web.Controllers
         public ActionResult Index()
         {
             return View();
+        }
+
+        [HttpPost]
+        public ActionResult Delete(string idList)
+        {
+            var result = new ResponseResult();
+            try
+            {
+                var idArray = idList.Split(',');
+                foreach (var id in idArray)
+                {
+                    var model = _TaskLogService.GetModel(int.Parse(id));
+                    model.IsDelete = 1;
+                    _TaskLogService.Update(model);
+                }
+                result.success = true;
+                result.message = "操作成功";
+            }
+            catch (Exception ex)
+            {
+                result.message = ex.Message;
+            }
+            return Json(result);
         }
 	}
 }

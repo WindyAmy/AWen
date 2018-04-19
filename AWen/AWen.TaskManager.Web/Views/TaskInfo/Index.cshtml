@@ -10,7 +10,16 @@
     </div>
 </div>
 <div class="layui-row">
-    <div class="layui-col-md12">
+    <div class="layui-col-md8">
+        <div class="layui-inline">
+            <label class="layui-form-label">任务名称:</label>
+            <div class="layui-input-inline">
+                <input type="text" name="search" placeholder="请输入任务名称" class="layui-input">
+            </div>
+            <button class="layui-btn layui-btn-normal">查询</button>
+        </div>
+    </div>
+    <div class="layui-col-md4">
         <button class="layui-btn layui-btn-sm" id="add">任务创建</button>
         <button class="layui-btn layui-btn-sm layui-btn-danger" id="deletemore">删除</button>
     </div>
@@ -26,17 +35,23 @@
             var table = layui.table;
 
             //第一个实例
-            var demoTable = table.render({
-                elem: '#demo'
-                // , height: 315
+            table.render({
+                id: 'demoTable'
+                , elem: '#demo'
+                , skin: 'row' //行边框风格
+                , even: true //开启隔行背景
+                //, size: 'sm' //小尺寸的表格
+               , height: 650
+               , limit: 15
+               , limits: [10, 15, 20, 30, 50, 100]
                , url: '/TaskInfo/List/' //数据接口
-               , page: false //开启分页
+               , page: true //开启分页
                , cols: [[ //表头
                         { field: 'TaskId', title: 'ID', type: "checkbox", width: 50, fixed: 'left' }
                         , { fixed: 'left', width: 150, align: "center", title: '操作', toolbar: '#barDemo' }
                         , { field: 'TaskName', title: '名称', width: 120, sort: true, fixed: 'left' }
                         , { field: 'TaskType', title: '类型', width: 80, fixed: 'left' }
-                        , { field: 'State', title: '状态', width: 120, templet: '#stateTpl', fixed: 'left' }
+                        , { field: 'State', title: '状态', width: 80, templet: '#stateTpl', fixed: 'left' }
                         , { field: 'AssemblyName', title: '程序集/路径', width: 120 }
                         , { field: 'ClassName', title: '类名/方法', width: 120 }
                         , { field: 'Description', title: '描述', width: 200 }
@@ -65,12 +80,12 @@
                         success: function (data) {
                             layer.msg(data.message);
                             if (data.success) {
-                                demoTable.reload();
+                                table.reload("demoTable");
                             }
 
                         },
                         error: function (data) {
-                            $.messager.alert('错误', data.message);
+                            layer.msg('错误:' + data.message);
                         }
                     });
 
@@ -97,12 +112,52 @@
                     //});
                 }
             });
+            //table.on('checkbox(test)', function (obj) {
+            //    console.log(obj.checked); //当前是否选中状态
+            //    console.log(obj.data); //选中行的相关数据
+            //    console.log(obj.type); //如果触发的是全选，则为：all，如果触发的是单选，则为：one
+            //});
             $("#add").bind("click", function () {
                 layer.open({
                     type: 2,
                     area: ['700px', '500px'],
                     content: "@Url.Action("Add", "TaskInfo")"  //这里content是一个普通的String
                 });
+            });
+            $("#deletemore").bind("click", function () {
+                var checkStatus = table.checkStatus('demoTable'); //test即为基础参数id对应的值
+
+                if (checkStatus.data.length > 0) {
+                    var idArray = new Array();
+                    for (var i = 0; i < checkStatus.data.length; i++) {
+                        idArray.push(checkStatus.data[i].TaskId)
+                        if(checkStatus.data[i].State>0)
+                        {
+                            layer.msg(checkStatus.data[i].TaskName+"启动中的任务不能删除");
+                            return;
+                        }
+                    }
+                    $.ajax({
+                        url: "@Url.Action("Delete", "TaskInfo")",
+                        data: { 'idList': idArray.join() },
+                        type: "Post",
+                        dataType: "json",
+                        success: function (data) {
+                            layer.msg(data.message);
+                            if (data.success) {
+                                table.reload("demoTable");
+                            }
+
+                        },
+                        error: function (data) {
+                            layer.msg('错误:'+data.message);
+                        }
+                    });
+                }
+                else {
+                    layer.msg("请选择行");
+                }
+
             });
         });
     </script>
@@ -112,26 +167,26 @@
         || d.State == "@((int)AWen.TaskManager.Core.Common.TaskState.Stopped)"
         || d.State == "@((int)AWen.TaskManager.Core.Common.TaskState.Error)"
         ){ }}
-        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-        <a class="layui-btn layui-btn-xs" lay-event="setState">启用</a>
+        <a class="layui-btn layui-btn-xs    layui-btn-normal" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-xs  layui-btn-normal" lay-event="setState">启用</a>
         {{#  } else {}}
-        <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="setState">停用</a>
+        <a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="setState">停用</a>
         {{#  } }}
     </script>
     <script type="text/html" id="stateTpl">
-        {{#  if(d.State == -100){ }}
+        {{#  if(d.State == "@((int)AWen.TaskManager.Core.Common.TaskState.Error)"){ }}
         <a class="layui-btn layui-btn-xs   layui-btn-danger">
             错误
         </a>
-        {{#  } else  if(d.State == -10) { }}
+        {{#  } else  if(d.State == "@((int)AWen.TaskManager.Core.Common.TaskState.Stopped)") { }}
         <a class="layui-btn layui-btn-xs  layui-btn-warm">停止</a>
-        {{#  } else  if(d.State == 0) { }}
+        {{#  } else  if(d.State == "@((int)AWen.TaskManager.Core.Common.TaskState.Stopping)") { }}
         <a class="layui-btn layui-btn-xs   layui-btn-warm">
             停止中...
         </a>
-        {{#  } else  if(d.State == 10) { }}
+        {{#  } else  if(d.State == "@((int)AWen.TaskManager.Core.Common.TaskState.Starting)") { }}
         <a class="layui-btn layui-btn-xs  ">启动中...</a>
-        {{#  } else  if(d.State == 20) { }}
+        {{#  } else  if(d.State ==  "@((int)AWen.TaskManager.Core.Common.TaskState.Running)") { }}
         <a class="layui-btn layui-btn-xs layui-btn-normal ">
             启动
         </a>

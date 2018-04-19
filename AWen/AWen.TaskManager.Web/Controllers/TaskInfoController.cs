@@ -1,5 +1,7 @@
 ﻿using AWen.TaskManager.Core.BLL;
 using AWen.TaskManager.Core.Model;
+using System;
+using System.Linq;
 using System.Web.Mvc;
 
 namespace AWen.TaskManager.Web.Controllers
@@ -14,10 +16,11 @@ namespace AWen.TaskManager.Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult List()
+        public ActionResult List(int page, int limit)
         {
-            var data = _TaskInfoService.GetModelList(" where IsDelete=0 ", null);
-            var result = new ResponseResult() { success = true, message = "数据获取成功", data = data };
+            var totaldata = _TaskInfoService.GetModelList(" where IsDelete=0 ", null);
+            var data = _TaskInfoService.GetListPage(page, limit, " where IsDelete=0 ", "TaskId desc", null);
+            var result = new ResponseResult() { success = true, count = totaldata.Count(), message = "数据获取成功", data = data };
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
@@ -56,6 +59,29 @@ namespace AWen.TaskManager.Web.Controllers
             model.State = state;
             result.success = _TaskInfoService.Update(model);
             result.message = result.success == true ? "操作成功" : "操作失败";
+            return Json(result);
+        }
+
+        [HttpPost]
+        public ActionResult Delete(string idList)
+        {
+            var result = new ResponseResult();
+            try
+            {
+                var idArray = idList.Split(',');
+                foreach (var id in idArray)
+                {
+                    var model = _TaskInfoService.GetModel(int.Parse(id));
+                    model.IsDelete = 1;
+                    _TaskInfoService.Update(model);
+                }
+                result.success = true;
+                result.message = "操作成功";
+            }
+            catch (Exception ex)
+            {
+                result.message = ex.Message;
+            }
             return Json(result);
         }
 
