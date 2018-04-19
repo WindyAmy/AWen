@@ -1,72 +1,80 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Info";
     Layout = "~/Views/Shared/_Layout_Dialog.cshtml";
 }
+@model AWen.TaskManager.Core.Model.TB_TM_TaskInfo
+<div class="layui-row">
+    <div class="layui-col-sm-12">
+        <form class="layui-form" id="form" action="@Url.Action("AddPost", "TaskInfo")" method="post">
 
-<div class="wrapper  animated fadeInUp">
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="ibox">
-                <div class="ibox-content" ng-controller="BackgroundJobUpdateController">
-                    <form class="form-horizontal m-t" id="form" role="form">
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">类型：</label>
-                            <div class="col-sm-8">
-                                <input id="JobType" name="JobType" class="form-control" type="text" ng-model="model.JobType" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">名称：</label>
-                            <div class="col-sm-8">
-                                <input id="Name" name="Name" class="form-control" type="text" ng-model="model.Name" data-validation-engine="validate[required]" data-errormessage-value-missing="请输入名称" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">程序集(例如: Only.Jobs.exe)：</label>
-                            <div class="col-sm-8">
-                                <input id="AssemblyName" name="AssemblyName" class="form-control" type="text" ng-model="model.AssemblyName" data-validation-engine="validate[required]" data-errormessage-value-missing="请输入程序集名称" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">类名：</label>
-                            <div class="col-sm-8">
-                                <input id="ClassName" name="ClassName" class="form-control" type="text" ng-model="model.ClassName" data-validation-engine="validate[required]" data-errormessage-value-missing="请输入类名" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">描述：</label>
-                            <div class="col-sm-8">
-                                <input id="Description" name="Description" class="form-control" type="text" ng-model="model.Description" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">参数：</label>
-                            <div class="col-sm-8">
-                                <input id="JobArgs" name="JobArgs" class="form-control" type="text" ng-model="model.JobArgs" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">Cron表达式：</label>
-                            <div class="col-sm-8">
-                                <input id="CronExpression" name="CronExpression" class="form-control" type="text" ng-model="model.CronExpression" data-validation-engine="validate[required]" data-errormessage-value-missing="请输入Cron表达式" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">Cron表达式描述：</label>
-                            <div class="col-sm-8">
-                                <input id="CronExpressionDescription" name="CronExpressionDescription" class="form-control" type="text" ng-model="model.CronExpressionDescription" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-sm-8 col-sm-offset-3">
-                                <button class="btn btn-primary" type="button" ng-click="SubmitUpdate()">提交</button>
-                            </div>
-                        </div>
-                    </form>
+            <div class="layui-form-item">
+                <label class="layui-form-label">名称：</label>
+                <div class="layui-input-block">
+                    <input id="TaskName" name="TaskName" class="layui-input" type="text" value="@Model.TaskName" data-validation-engine="validate[required]" data-errormessage-value-missing="请输入名称" />
                 </div>
             </div>
-        </div>
+            <div class="layui-form-item ">
+                <label class="layui-form-label">类型：</label>
+                <div class="layui-input-block">
+                    <select id="TaskType" name="TaskType">
+                        <option value=""></option>
+                        @{foreach (var item in Enum.GetNames(typeof(AWen.TaskManager.Core.Common.TaskType)))
+                        {
+                            if (Model.TaskType == item.ToString())
+                            {
+                                <option selected="selected" value="@item.ToString()">@item.ToString()</option>
+                            }
+                            else
+                            {
+                                <option value="@item.ToString()">@item.ToString()</option>
+                            }
+                        }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">程序集：</label>
+                <div class="layui-input-block">
+                    <input id="AssemblyName" name="AssemblyName" class="layui-input" type="text" value="@Model.AssemblyName" data-validation-engine="validate[required]" data-errormessage-value-missing="请输入程序集名称" />
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">类名：</label>
+                <div class="layui-input-block">
+                    <input id="ClassName" name="ClassName" class="layui-input" type="text" value="@Model.ClassName" data-validation-engine="validate[required]" data-errormessage-value-missing="请输入类名" />
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">描述：</label>
+                <div class="layui-input-block">
+                    <textarea id="Description" name="Description" class="layui-textarea" />@Model.Description</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">参数：</label>
+                <div class="layui-input-block">
+                    <input id="TaskArgs" name="TaskArgs" class="layui-input" type="text" value="@Model.TaskArgs" />
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">Cron表达式：</label>
+                <div class="layui-input-block">
+                    <input id="CronExpression" name="CronExpression" class="layui-input" type="text" value="@Model.CronExpression" data-validation-engine="validate[required]" data-errormessage-value-missing="请输入Cron表达式" />
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">Cron表达式描述：</label>
+                <div class="layui-input-block">
+                    <textarea id="CronExpressionDescription" name="CronExpressionDescription" class="layui-textarea" placeholder="请输入内容" />@Model.CronExpressionDescription</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
-

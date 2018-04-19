@@ -1,8 +1,75 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Add";
     Layout = "~/Views/Shared/_Layout_Dialog.cshtml";
 }
+<div class="layui-row">
+    <div class="layui-col-sm-12">
+        <form class="layui-form" id="form" action="@Url.Action("AddPost", "TaskInfo")" method="post">
 
-<h2>Add</h2>
+            <div class="layui-form-item">
+                <label class="layui-form-label">名称：</label>
+                <div class="layui-input-block">
+                    <input id="TaskName" name="TaskName" class="layui-input" type="text" required lay-verify="required" placeholder="请输入名称" />
+                </div>
+            </div>
+            <div class="layui-form-item ">
+                <label class="layui-form-label">类型：</label>
+                <div class="layui-input-block">
+                    <select id="TaskType" name="TaskType" required lay-verify="required" placeholder="请输入类型">
+                        <option value=""></option>
+                        @{foreach (var item in Enum.GetNames(typeof(AWen.TaskManager.Core.Common.TaskType)))
+                        {
+
+                            <option value="@item.ToString()">@item.ToString()</option>
+
+                        }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">程序集：</label>
+                <div class="layui-input-block">
+                    <input id="AssemblyName" name="AssemblyName" class="layui-input" type="text" required lay-verify="required" placeholder="请输入程序集名称"/>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">类名：</label>
+                <div class="layui-input-block">
+                    <input id="ClassName" name="ClassName" class="layui-input" type="text" required lay-verify="required" placeholder="请输入类名" />
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">描述：</label>
+                <div class="layui-input-block">
+                    <textarea id="Description" name="Description" class="layui-textarea" ></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">参数：</label>
+                <div class="layui-input-block">
+                    <input id="TaskArgs" name="TaskArgs" class="layui-input" type="text" />
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">Cron表达式：</label>
+                <div class="layui-input-block">
+                    <input id="CronExpression" name="CronExpression" class="layui-input" type="text" required lay-verify="required" placeholder="请输入Cron表达式" /> 
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">Cron表达式描述：</label>
+                <div class="layui-input-block">
+                    <textarea id="CronExpressionDescription" name="CronExpressionDescription" class="layui-textarea" placeholder="请输入内容" ></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 

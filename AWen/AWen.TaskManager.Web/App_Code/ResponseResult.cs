@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace AWen.TaskManager.Web.Controllers
+﻿namespace AWen.TaskManager.Web.Controllers
 {
     /// <summary>
     /// 前端异步调用时返回的json对象模型
@@ -35,20 +30,23 @@ namespace AWen.TaskManager.Web.Controllers
         /// </summary>
         public object data { set; get; }
 
+        public long count { set; get; }
 
         public ResponseResult()
         {
-
         }
+
         public ResponseResult(bool _success)
         {
             this.success = _success;
         }
+
         public ResponseResult(bool _success, string _message)
         {
             this.success = _success;
             this.message = _message;
         }
+
         public ResponseResult(bool _success, string _message, object _data)
         {
             this.success = _success;

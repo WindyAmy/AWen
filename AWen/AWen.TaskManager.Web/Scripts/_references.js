@@ -19,3 +19,4 @@
 /// <reference path="../content/layui/lay/modules/tree.js" />
 /// <reference path="../content/layui/lay/modules/upload.js" />
 /// <reference path="../content/layui/lay/modules/util.js" />
+/// <reference path="../content/jquery/jquery-2.1.1.js" />

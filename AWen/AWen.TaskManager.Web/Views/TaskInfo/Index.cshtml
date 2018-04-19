@@ -11,8 +11,8 @@
 </div>
 <div class="layui-row">
     <div class="layui-col-md12">
-        <button class="layui-btn layui-btn-sm">任务创建</button>
-        <button class="layui-btn layui-btn-sm layui-btn-danger">删除</button>
+        <button class="layui-btn layui-btn-sm" id="add">任务创建</button>
+        <button class="layui-btn layui-btn-sm layui-btn-danger" id="deletemore">删除</button>
     </div>
 </div>
 <div class="layui-row">
@@ -22,75 +22,124 @@
 </div>
 @section JS{
     <script>
-    layui.use('table', function () {
-        var table = layui.table;
+        layui.use('table', function () {
+            var table = layui.table;
 
-        //第一个实例
-        table.render({
-            elem: '#demo'
-            // , height: 315
-          , url: '/TaskInfo/List/' //数据接口
-          , page: false //开启分页
-          , cols: [[ //表头
-            { field: 'TaskId', title: 'ID', type: "checkbox", width: 50, fixed: 'left' }
-          , { fixed: 'left', width: 150, align: "center", title: '操作', toolbar: '#barDemo' }
-            , { field: 'TaskName', title: '名称', width: 120, sort: true, fixed: 'left' }
-            , { field: 'TaskType', title: '类型', width: 80, fixed: 'left' }
-            , { field: 'AssemblyName', title: '程序集/路径', width: 120 }
-            , { field: 'ClassName', title: '类名/方法', width: 120 }
-            , { field: 'Description', title: '描述', width: 200 }
-            , { field: 'TaskArgs', title: '参数', width: 80 }
-            , { field: 'CronExpression', title: 'Cron表达式', width: 120 }
-            , { field: 'FirstRunTime', title: '首次运行时间', width: 120 }
-            , { field: 'NextRunTime', title: '下次运行时间', width: 120 }
-            , { field: 'LastRunTime', title: '最后运行时间', width: 120 }
-            , { field: 'RunCount', title: '总运行次数', width: 80 }
-            , { field: 'State', title: '状态', width: 80 }
-            , { field: 'Priority', title: '权重', width: 80 }
-            , { field: 'DisplayOrder', title: '排序码', width: 80 }
-          ]]
-        });
+            //第一个实例
+            var demoTable = table.render({
+                elem: '#demo'
+                // , height: 315
+               , url: '/TaskInfo/List/' //数据接口
+               , page: false //开启分页
+               , cols: [[ //表头
+                        { field: 'TaskId', title: 'ID', type: "checkbox", width: 50, fixed: 'left' }
+                        , { fixed: 'left', width: 150, align: "center", title: '操作', toolbar: '#barDemo' }
+                        , { field: 'TaskName', title: '名称', width: 120, sort: true, fixed: 'left' }
+                        , { field: 'TaskType', title: '类型', width: 80, fixed: 'left' }
+                        , { field: 'State', title: '状态', width: 120, templet: '#stateTpl', fixed: 'left' }
+                        , { field: 'AssemblyName', title: '程序集/路径', width: 120 }
+                        , { field: 'ClassName', title: '类名/方法', width: 120 }
+                        , { field: 'Description', title: '描述', width: 200 }
+                        , { field: 'TaskArgs', title: '参数', width: 80 }
+                        , { field: 'CronExpression', title: 'Cron表达式', width: 120 }
+                        , { field: 'FirstRunTime', title: '首次运行时间', width: 120 }
+                        , { field: 'NextRunTime', title: '下次运行时间', width: 120 }
+                        , { field: 'LastRunTime', title: '最后运行时间', width: 120 }
+                        , { field: 'RunCount', title: '总运行次数', width: 80 }
+                        , { field: 'Priority', title: '权重', width: 80 }
+                        , { field: 'DisplayOrder', title: '排序码', width: 80 }
+               ]]
+            });
 
-        table.on('tool(test)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
-            var data = obj.data; //获得当前行数据
-            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
-            var tr = obj.tr; //获得当前行 tr 的DOM对象
+            table.on('tool(test)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+                var data = obj.data; //获得当前行数据
+                var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+                var tr = obj.tr; //获得当前行 tr 的DOM对象
 
-            if (layEvent === 'detail') { //查看
-                //console.log(tr);
-                console.log(obj.data.TaskId);
+                if (layEvent === 'setState') { //操作状态
+                    $.ajax({
+                        url: "@Url.Action("UpateState", "TaskInfo")",
+                        data: { 'id': data.TaskId, 'state': data.State > 0 ? 0 : 10 },
+                        type: "Post",
+                        dataType: "json",
+                        success: function (data) {
+                            layer.msg(data.message);
+                            if (data.success) {
+                                demoTable.reload();
+                            }
+
+                        },
+                        error: function (data) {
+                            $.messager.alert('错误', data.message);
+                        }
+                    });
+
+                    //do somehing
+                } else if (layEvent === 'del') { //删除
+                    layer.confirm('真的删除行么', function (index) {
+                        obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                        layer.close(index);
+                        //向服务端发送删除指令
+                    });
+                } else if (layEvent === 'edit') { //编辑
+                    //do something
+
+                    layer.open({
+                        type: 2,
+                        area: ['700px', '500px'],
+                        content: "@Url.Action("Info", "TaskInfo")/" + data.TaskId //这里content是一个普通的String
+                    });
+
+                    //同步更新缓存对应的值
+                    //obj.update({
+                    //    username: '123'
+                    //  , title: 'xxx'
+                    //});
+                }
+            });
+            $("#add").bind("click", function () {
                 layer.open({
                     type: 2,
                     area: ['700px', '500px'],
-                    content: "@Url.Action("Info", "TaskInfo")/" + obj.data.TaskId //这里content是一个普通的String
-                    });
-                //do somehing
-            } else if (layEvent === 'del') { //删除
-                layer.confirm('真的删除行么', function (index) {
-                    obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
-                    layer.close(index);
-                    //向服务端发送删除指令
+                    content: "@Url.Action("Add", "TaskInfo")"  //这里content是一个普通的String
                 });
-            } else if (layEvent === 'edit') { //编辑
-                //do something
-                alert("edit");
-                //同步更新缓存对应的值
-                //obj.update({
-                //    username: '123'
-                //  , title: 'xxx'
-                //});
-            }
+            });
         });
-    });
     </script>
     <script type="text/html" id="barDemo">
-        <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
-        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 
-        <!-- 这里同样支持 laytpl 语法，如： -->
-        {{#  if(d.auth > 2){ }}
-        <a class="layui-btn layui-btn-xs" lay-event="check">审核</a>
+        {{# if(d.State =="@((int)AWen.TaskManager.Core.Common.TaskState.Stopping)"
+        || d.State == "@((int)AWen.TaskManager.Core.Common.TaskState.Stopped)"
+        || d.State == "@((int)AWen.TaskManager.Core.Common.TaskState.Error)"
+        ){ }}
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-xs" lay-event="setState">启用</a>
+        {{#  } else {}}
+        <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="setState">停用</a>
         {{#  } }}
     </script>
+    <script type="text/html" id="stateTpl">
+        {{#  if(d.State == -100){ }}
+        <a class="layui-btn layui-btn-xs   layui-btn-danger">
+            错误
+        </a>
+        {{#  } else  if(d.State == -10) { }}
+        <a class="layui-btn layui-btn-xs  layui-btn-warm">停止</a>
+        {{#  } else  if(d.State == 0) { }}
+        <a class="layui-btn layui-btn-xs   layui-btn-warm">
+            停止中...
+        </a>
+        {{#  } else  if(d.State == 10) { }}
+        <a class="layui-btn layui-btn-xs  ">启动中...</a>
+        {{#  } else  if(d.State == 20) { }}
+        <a class="layui-btn layui-btn-xs layui-btn-normal ">
+            启动
+        </a>
+        {{#  } else {}}
+        <a class="layui-btn layui-btn-xs   layui-btn-primary">
+            无效状态
+        </a>
+        {{#  } }}
+    </script>
+
 }

@@ -1,9 +1,5 @@
 ﻿using AWen.TaskManager.Core.BLL;
 using AWen.TaskManager.Core.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace AWen.TaskManager.Web.Controllers
@@ -20,7 +16,7 @@ namespace AWen.TaskManager.Web.Controllers
         [HttpGet]
         public ActionResult List()
         {
-            var data = _TaskInfoService.GetModelList("", null);
+            var data = _TaskInfoService.GetModelList(" where IsDelete=0 ", null);
             var result = new ResponseResult() { success = true, message = "数据获取成功", data = data };
             return Json(result, JsonRequestBehavior.AllowGet);
         }
@@ -36,9 +32,11 @@ namespace AWen.TaskManager.Web.Controllers
         {
             return View();
         }
-        public ActionResult Info()
+
+        public ActionResult Info(int id)
         {
-            return View();
+            var model = _TaskInfoService.GetModel(id);
+            return View(model);
         }
 
         [HttpPost]
@@ -49,6 +47,18 @@ namespace AWen.TaskManager.Web.Controllers
             result.success = _TaskInfoService.Add(Info);
             return Json(result);
         }
+
+        [HttpPost]
+        public ActionResult UpateState(int id, int state)
+        {
+            var result = new ResponseResult();
+            var model = _TaskInfoService.GetModel(id);
+            model.State = state;
+            result.success = _TaskInfoService.Update(model);
+            result.message = result.success == true ? "操作成功" : "操作失败";
+            return Json(result);
+        }
+
         [HttpGet]
         public ActionResult InfoData(int id)
         {

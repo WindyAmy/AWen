@@ -11,19 +11,26 @@
     </script>
     <![endif]-->
     <link href="~/Content/layui/css/layui.css" rel="stylesheet" />
+    <script src="~/Content/jquery/jquery-2.1.1.min.js"></script>
     <script src="~/Content/layui/layui.js"></script>
     <script type="text/javascript">
         //由于模块都一次性加载，因此不用执行 layui.use() 来加载对应模块，直接使用即可：
         //; !function () {
         //    var layer = layui.layer
-        //    , form = layui.form;
+        //    , form = layui.form
+        //    , element = layui.element;
 
-        //    layer.msg('Hello World');
+        //    //layer.msg('Hello World');
         //}();
 
         //JavaScript代码区域
         layui.use('element', function () {
             var element = layui.element;
+        });
+        layui.use('form', function () {
+            var form = layui.form;
+
+          
         });
     </script>
     @RenderSection("CSS", false)
