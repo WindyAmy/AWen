@@ -19,8 +19,8 @@ namespace AWen.TaskManager.Web.Controllers
         [HttpGet]
         public ActionResult List(int page, int limit, string search)
         {
-            var totaldata = _TaskLogService.GetModelList(" where IsDelete=0 and TaskName Like '%" + search + "%'", null);
-            var data = _TaskLogService.GetListPage(page, limit, " where IsDelete=0 ", "TaskLogId desc", null);
+            var totaldata = _TaskLogService.GetModelList(" where IsDelete=0 and TaskName Like N'%" + search + "%' ", null);
+            var data = _TaskLogService.GetListPage(page, limit, " where IsDelete=0 and TaskName Like N'%" + search + "%' ", "TaskLogId desc", null);
             var result = new ResponseResult() { success = true,count=totaldata.Count(), message = "数据获取成功", data = data };
             return Json(result, JsonRequestBehavior.AllowGet);
         }

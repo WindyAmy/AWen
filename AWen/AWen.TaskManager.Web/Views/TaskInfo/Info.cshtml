@@ -3,78 +3,98 @@
     Layout = "~/Views/Shared/_Layout_Dialog.cshtml";
 }
 @model AWen.TaskManager.Core.Model.TB_TM_TaskInfo
-<div class="layui-row">
-    <div class="layui-col-sm-12">
-        <form class="layui-form" id="form" action="@Url.Action("AddPost", "TaskInfo")" method="post">
-
-            <div class="layui-form-item">
-                <label class="layui-form-label">名称：</label>
-                <div class="layui-input-block">
-                    <input id="TaskName" name="TaskName" class="layui-input" type="text" value="@Model.TaskName" data-validation-engine="validate[required]" data-errormessage-value-missing="请输入名称" />
-                </div>
-            </div>
-            <div class="layui-form-item ">
-                <label class="layui-form-label">类型：</label>
-                <div class="layui-input-block">
-                    <select id="TaskType" name="TaskType">
-                        <option value=""></option>
-                        @{foreach (var item in Enum.GetNames(typeof(AWen.TaskManager.Core.Common.TaskType)))
-                        {
-                            if (Model.TaskType == item.ToString())
-                            {
-                                <option selected="selected" value="@item.ToString()">@item.ToString()</option>
-                            }
-                            else
-                            {
-                                <option value="@item.ToString()">@item.ToString()</option>
-                            }
-                        }
-                        }
-                    </select>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">程序集：</label>
-                <div class="layui-input-block">
-                    <input id="AssemblyName" name="AssemblyName" class="layui-input" type="text" value="@Model.AssemblyName" data-validation-engine="validate[required]" data-errormessage-value-missing="请输入程序集名称" />
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">类名：</label>
-                <div class="layui-input-block">
-                    <input id="ClassName" name="ClassName" class="layui-input" type="text" value="@Model.ClassName" data-validation-engine="validate[required]" data-errormessage-value-missing="请输入类名" />
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">描述：</label>
-                <div class="layui-input-block">
-                    <textarea id="Description" name="Description" class="layui-textarea" />@Model.Description</textarea>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">参数：</label>
-                <div class="layui-input-block">
-                    <input id="TaskArgs" name="TaskArgs" class="layui-input" type="text" value="@Model.TaskArgs" />
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">Cron表达式：</label>
-                <div class="layui-input-block">
-                    <input id="CronExpression" name="CronExpression" class="layui-input" type="text" value="@Model.CronExpression" data-validation-engine="validate[required]" data-errormessage-value-missing="请输入Cron表达式" />
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">Cron表达式描述：</label>
-                <div class="layui-input-block">
-                    <textarea id="CronExpressionDescription" name="CronExpressionDescription" class="layui-textarea" placeholder="请输入内容" />@Model.CronExpressionDescription</textarea>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <div class="layui-input-block">
-                    <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
-                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
-                </div>
-            </div>
-        </form>
+<form class="layui-form" id="form" action="@Url.Action("UpatePost", "TaskInfo")" method="post">
+    <div class="layui-form-item">
+        <label class="layui-form-label">名称：</label>
+        <div class="layui-input-block">
+            <input id="TaskId" name="TaskId" type="hidden" value="@Model.TaskId" />
+            <input id="State" name="State" type="hidden" value="@AWen.TaskManager.Core.Common.TaskState.Initial" />
+            <input id="DisplayOrder" name="DisplayOrder" type="hidden" value="@Model.DisplayOrder" />
+            <input id="Priority" name="Priority" type="hidden" value="@Model.Priority" />
+            <input id="TaskName" name="TaskName" class="layui-input" type="text" value="@Model.TaskName" data-validation-engine="validate[required]" data-errormessage-value-missing="请输入名称" />
+        </div>
     </div>
-</div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">类型：</label>
+        <div class="layui-input-block">
+            <select id="TaskType" name="TaskType">
+                <option value=""></option>
+                @{foreach (var item in Enum.GetNames(typeof(AWen.TaskManager.Core.Common.TaskType)))
+                {
+                    if (Model.TaskType == item.ToString())
+                    {
+                <option selected="selected" value="@item.ToString()">@item.ToString()</option>
+                    }
+                    else
+                    {
+                <option value="@item.ToString()">@item.ToString()</option>
+                    }
+                }
+                }
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">程序集：</label>
+        <div class="layui-input-block">
+            <input id="AssemblyName" name="AssemblyName" class="layui-input" type="text" value="@Model.AssemblyName" data-validation-engine="validate[required]" data-errormessage-value-missing="请输入程序集名称" />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">类名：</label>
+        <div class="layui-input-block">
+            <input id="ClassName" name="ClassName" class="layui-input" type="text" value="@Model.ClassName" data-validation-engine="validate[required]" data-errormessage-value-missing="请输入类名" />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">描述：</label>
+        <div class="layui-input-block">
+            <textarea id="Description" name="Description" class="layui-textarea" >@Model.Description</textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">首次运行时间：</label>
+        <div class="layui-input-block">
+            <input id="FirstRunTime" name="FirstRunTime" class="layui-input" type="text" value="@(Model.FirstRunTime.HasValue?Model.FirstRunTime.Value.ToString("yyyy-MM-dd HH:mm:ss"):"")" />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">参数：</label>
+        <div class="layui-input-block">
+            <input id="TaskArgs" name="TaskArgs" class="layui-input" type="text" value="@Model.TaskArgs" />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">Cron表达式：</label>
+        <div class="layui-input-block">
+            <input id="CronExpression" name="CronExpression" class="layui-input" type="text" value="@Model.CronExpression" data-validation-engine="validate[required]" data-errormessage-value-missing="请输入Cron表达式" />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">Cron表达式描述：</label>
+        <div class="layui-input-block">
+            <textarea id="CronExpressionDescription" name="CronExpressionDescription" class="layui-textarea" placeholder="请输入内容" />@Model.CronExpressionDescription</textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+            @*<button type="reset" class="layui-btn layui-btn-primary">重置</button>*@
+        </div>
+    </div>
+</form>
+
+@section JS{
+    <script>
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+
+            //执行一个laydate实例
+            laydate.render({
+                elem: '#FirstRunTime' //指定元素
+                 , type: 'datetime'
+                , format: "yyyy-MM-dd HH:mm:ss"
+            });
+        });
+    </script>
+}

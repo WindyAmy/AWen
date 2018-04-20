@@ -14,7 +14,7 @@
         <div class="layui-inline">
             <label class="layui-form-label">任务名称:</label>
             <div class="layui-input-inline">
-                <input type="text" name="search" placeholder="请输入任务名称" class="layui-input">
+                <input type="text" name="search" id="search" placeholder="请输入任务名称" class="layui-input">
             </div>
             <button class="layui-btn layui-btn-normal" id="btnSearch">查询</button>
         </div>
@@ -45,7 +45,7 @@
                 , limit: 15
                 , limits: [10, 15, 20, 30, 50, 100]
                 , url: '/TaskLog/List/' //数据接口
-                , where: { search: $("#search").val() } //如果无需传递额外参数，可不加该参数
+                , where: { search: $("#search").val() } //{ search: $("#search").val() } //如果无需传递额外参数，可不加该参数
                 , page: true //开启分页
                 , cols: [[ //表头
                          { field: 'TaskLogId', title: 'ID', type: "checkbox", width: 50, fixed: 'left' }
@@ -61,31 +61,36 @@
                 var checkStatus = table.checkStatus('demoTable'); //test即为基础参数id对应的值
 
                 if (checkStatus.data.length > 0) {
-                    var idArray = new Array();
-                    for (var i = 0; i < checkStatus.data.length; i++) {
-                        idArray.push(checkStatus.data[i].TaskLogId)
-                        //if(checkStatus.data[i].State>0)
-                        //{
-                        //    layer.msg(checkStatus.data[i].TaskName+"启动中的任务不能删除");
-                        //    return;
-                        //}
-                    }
-                    $.ajax({
-                        url: "@Url.Action("Delete", "TaskLog")",
-                        data: { 'idList': idArray.join() },
-                        type: "Post",
-                        dataType: "json",
-                        success: function (data) {
-                            layer.msg(data.message);
-                            if (data.success) {
-                                table.reload("demoTable");
-                            }
-
-                        },
-                        error: function (data) {
-                            layer.msg('错误:' + data.message);
+                    layer.confirm('真的删除行么', function (index) {
+                        var idArray = new Array();
+                        for (var i = 0; i < checkStatus.data.length; i++) {
+                            idArray.push(checkStatus.data[i].TaskLogId)
+                            //if(checkStatus.data[i].State>0)
+                            //{
+                            //    layer.msg(checkStatus.data[i].TaskName+"启动中的任务不能删除");
+                            //    return;
+                            //}
                         }
+                        $.ajax({
+                            url: "@Url.Action("Delete", "TaskLog")",
+                            data: { 'idList': idArray.join() },
+                            type: "Post",
+                            dataType: "json",
+                            success: function (data) {
+                                layer.msg(data.message);
+                                if (data.success) {
+                                    table.reload("demoTable");
+                                }
+
+                            },
+                            error: function (data) {
+                                layer.msg('错误:' + data.message);
+                            }
+                        });
+                        layer.close(index);
+                        //向服务端发送删除指令
                     });
+
                 }
                 else {
                     layer.msg("请选择行");
@@ -93,10 +98,10 @@
 
             });
             $("#btnSearch").bind("click", function () {
-                alert(111)
-                table.reload("demoTable");
+                table.reload("demoTable", {
+                    where: { search: $("#search").val() }//设定异步数据接口的额外参数
+                });
             });
         });
-       
     </script>
 }

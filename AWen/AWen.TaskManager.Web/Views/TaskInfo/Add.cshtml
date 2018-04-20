@@ -46,6 +46,12 @@
                 </div>
             </div>
             <div class="layui-form-item">
+                <label class="layui-form-label">首次运行时间：</label>
+                <div class="layui-input-block">
+                    <input id="FirstRunTime" name="FirstRunTime" class="layui-input" type="text"  />
+                </div>
+            </div>
+            <div class="layui-form-item">
                 <label class="layui-form-label">参数：</label>
                 <div class="layui-input-block">
                     <input id="TaskArgs" name="TaskArgs" class="layui-input" type="text" />
@@ -72,4 +78,19 @@
         </form>
     </div>
 </div>
+
+@section JS{
+    <script>
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+
+            //执行一个laydate实例
+            laydate.render({
+                elem: '#FirstRunTime' //指定元素
+                 , type: 'datetime'
+                , format: "yyyy-MM-dd HH:mm:ss"
+            });
+        });
+    </script>
+}
 

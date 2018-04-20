@@ -16,10 +16,10 @@ namespace AWen.TaskManager.Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult List(int page, int limit)
+        public ActionResult List(int page, int limit, string search)
         {
-            var totaldata = _TaskInfoService.GetModelList(" where IsDelete=0 ", null);
-            var data = _TaskInfoService.GetListPage(page, limit, " where IsDelete=0 ", "TaskId desc", null);
+            var totaldata = _TaskInfoService.GetModelList("  where IsDelete=0 and TaskName Like N'%" + search + "%'  ", null);
+            var data = _TaskInfoService.GetListPage(page, limit, "  where IsDelete=0 and TaskName Like N'%" + search + "%'  ", "TaskId desc", null);
             var result = new ResponseResult() { success = true, count = totaldata.Count(), message = "数据获取成功", data = data };
             return Json(result, JsonRequestBehavior.AllowGet);
         }
@@ -59,6 +59,16 @@ namespace AWen.TaskManager.Web.Controllers
             model.State = state;
             result.success = _TaskInfoService.Update(model);
             result.message = result.success == true ? "操作成功" : "操作失败";
+            return Json(result);
+        }
+
+        [HttpPost]
+        public ActionResult UpatePost(TB_TM_TaskInfo Info)
+        {
+            var result = new ResponseResult();
+            result.success = _TaskInfoService.Update(Info);
+            result.message = result.success == true ? "操作成功" : "操作失败";
+
             return Json(result);
         }
 

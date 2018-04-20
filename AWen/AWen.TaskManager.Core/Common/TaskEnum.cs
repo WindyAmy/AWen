@@ -20,12 +20,18 @@ namespace AWen.TaskManager.Core.Common
         /// <summary>
         /// 停止 表示任务结束运行最终状态
         /// </summary>
-        Stopped = -10,
+        Stopped = -20,
 
         /// <summary>
         /// 停止中 表示任务即将进入停止运行的临时状态
         /// </summary>
-        Stopping = 0,
+        Stopping = -10,
+
+
+        /// <summary>
+        /// 初始状态 表示任务刚创建或者编辑后初始状态
+        /// </summary>
+        Initial = 0,
 
         /// <summary>
         /// /开始及启动中 表示任务即将进入运行中的临时状态
