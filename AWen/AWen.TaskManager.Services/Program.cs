@@ -13,7 +13,7 @@ namespace AWen.TaskManager.Services
                 // x.UseLog4Net();
                 x.RunAsLocalSystem();
                 x.Service<TaskServicesRunner>();
-                x.SetDescription(string.Format("{0} Ver:{1}", System.Configuration.ConfigurationManager.AppSettings.Get("ServiceName"), System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()));
+                x.SetDescription(string.Format("{0} Ver:{1}", System.Configuration.ConfigurationManager.AppSettings.Get("ServiceDescription"), System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()));
                 x.SetDisplayName(System.Configuration.ConfigurationManager.AppSettings.Get("ServiceDisplayName"));
                 x.SetServiceName(System.Configuration.ConfigurationManager.AppSettings.Get("ServiceName"));
                 x.EnablePauseAndContinue();

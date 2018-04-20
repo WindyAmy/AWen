@@ -45,12 +45,12 @@ namespace AWen.TaskManager.Services.Core
             {
                 TaskId = -1,
                 TaskType = TaskType.IJob.ToString(),
-                TaskName = "AWen.MajorTask",
-                Description = "这个是关键主任务,它负责调度其它任务(必须开启)",
-                CronExpression = "0/3 * * * * ?",
-                CronExpressionDescription = "每3秒中执行一次"
+                TaskName = System.Configuration.ConfigurationManager.AppSettings["MajorTaskName"],
+                Description = System.Configuration.ConfigurationManager.AppSettings["MajorTaskDescription"],
+                CronExpression = System.Configuration.ConfigurationManager.AppSettings["MajorTaskCronExpression"],
+                CronExpressionDescription = System.Configuration.ConfigurationManager.AppSettings["MajorTaskCronExpressionDescription"], 
             };
-
+            //scheduler.ListenerManager.AddSchedulerListener(new SchedulerListener());
             scheduler.ListenerManager.AddJobListener(new SchedulerJobListener(), GroupMatcher<JobKey>.GroupStartsWith("TaskGroup."));
             var job = JobBuilder.Create<MajorTask>()
                 .WithIdentity(majorTaskInfo.TaskName + ".TaskName", majorTaskInfo.TaskName + ".TaskGroup")
