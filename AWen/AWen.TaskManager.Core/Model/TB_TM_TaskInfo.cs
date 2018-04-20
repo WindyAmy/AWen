@@ -136,5 +136,10 @@ namespace AWen.TaskManager.Core.Model
         /// 是否删除 0-未删除   1-已删除
         /// </summary>
         public int IsDelete { get; set; }
+
+        /// <summary>
+        /// 立刻运行 0-不是立刻运行 1-立刻运行
+        /// </summary>
+        public int ImmedRun { get; set; }
     }
 }

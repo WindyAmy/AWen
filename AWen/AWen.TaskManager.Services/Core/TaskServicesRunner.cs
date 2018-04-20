@@ -4,6 +4,7 @@ using AWen.TaskManager.Core.Model;
 using Newtonsoft.Json;
 using Quartz;
 using Quartz.Impl;
+using Quartz.Impl.Matchers;
 
 /********************************************************************
  * 命名空间: AWen.TaskManager.Services.Core
@@ -20,7 +21,6 @@ using Quartz.Impl;
 *********************************************************************/
 
 using System;
-using System.Collections.Specialized;
 using Topshelf;
 
 namespace AWen.TaskManager.Services.Core
@@ -51,7 +51,7 @@ namespace AWen.TaskManager.Services.Core
                 CronExpressionDescription = "每3秒中执行一次"
             };
 
-            scheduler.ListenerManager.AddJobListener(new SchedulerJobListener());
+            scheduler.ListenerManager.AddJobListener(new SchedulerJobListener(), GroupMatcher<JobKey>.GroupStartsWith("TaskGroup."));
             var job = JobBuilder.Create<MajorTask>()
                 .WithIdentity(majorTaskInfo.TaskName + ".TaskName", majorTaskInfo.TaskName + ".TaskGroup")
                 .Build();

@@ -92,7 +92,7 @@
 
                     //do somehing
                 } else if (layEvent === 'del') { //删除
-                    layer.confirm('真的删除行么', function (index) {
+                    layer.confirm('真的删除行吗?', function (index) {
                         obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
                         layer.close(index);
                         //向服务端发送删除指令
@@ -106,11 +106,29 @@
                         content: "@Url.Action("Info", "TaskInfo")/" + data.TaskId //这里content是一个普通的String
                     });
 
-                    //同步更新缓存对应的值
-                    //obj.update({
-                    //    username: '123'
-                    //  , title: 'xxx'
-                    //});
+                }
+                else if (layEvent === 'setImmedRun') {
+                    layer.confirm('真的要立刻运行该程序吗?', function (index) {
+                        //向服务端发送删除指令
+                        $.ajax({
+                            url: "@Url.Action("UpateImmedRun", "TaskInfo")",
+                            data: { 'id': data.TaskId, 'immedRun': 1 },
+                            type: "Post",
+                            dataType: "json",
+                            success: function (data) {
+                                layer.msg(data.message);
+                                if (data.success) {
+                                    table.reload("demoTable");
+                                }
+
+                            },
+                            error: function (data) {
+                                layer.msg('错误:' + data.message);
+                            }
+                        });
+                        layer.close(index);
+                       
+                    });
                 }
             });
             //table.on('checkbox(test)', function (obj) {
@@ -129,7 +147,7 @@
                 var checkStatus = table.checkStatus('demoTable'); //test即为基础参数id对应的值
 
                 if (checkStatus.data.length > 0) {
-                    layer.confirm('真的删除行么', function (index) {
+                    layer.confirm('真的删除行吗?', function (index) {
                         var idArray = new Array();
                         for (var i = 0; i < checkStatus.data.length; i++) {
                             idArray.push(checkStatus.data[i].TaskId)
@@ -182,6 +200,7 @@
         <a class="layui-btn layui-btn-xs  layui-btn-normal" lay-event="setState">启用</a>
         {{#  } else {}}
         <a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="setState">停用</a>
+        <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="setImmedRun">立刻运行</a>
         {{#  } }}
     </script>
     <script type="text/html" id="stateTpl">

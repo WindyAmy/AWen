@@ -63,6 +63,17 @@ namespace AWen.TaskManager.Web.Controllers
         }
 
         [HttpPost]
+        public ActionResult UpateImmedRun(int id, int immedRun)
+        {
+            var result = new ResponseResult();
+            var model = _TaskInfoService.GetModel(id);
+            model.ImmedRun = immedRun;
+            result.success = _TaskInfoService.Update(model);
+            result.message = result.success == true ? "操作成功" : "操作失败";
+            return Json(result);
+        }
+
+        [HttpPost]
         public ActionResult UpatePost(TB_TM_TaskInfo Info)
         {
             var result = new ResponseResult();

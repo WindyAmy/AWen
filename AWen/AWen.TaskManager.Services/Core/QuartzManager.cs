@@ -32,7 +32,7 @@ namespace AWen.TaskManager.Services.Core
         ///  任务管理
         /// </summary>
         /// <param name="scheduler"></param>
-        public static  void TaskManager(IScheduler scheduler)
+        public static void TaskManager(IScheduler scheduler)
         {
             var taskList = new TaskInfoService().GetModelList("WHERE IsDelete=0", null);
             if (taskList != null)
@@ -42,6 +42,13 @@ namespace AWen.TaskManager.Services.Core
                     JobKey jobKey = new JobKey("TaskName." + taskInfo.TaskId, "TaskGroup." + taskInfo.TaskId);
                     if (scheduler.CheckExists(jobKey))//任务存在
                     {
+                        //立刻运行
+                        if (taskInfo.ImmedRun == 1)
+                        {
+                            var _JobDataMap = new JobDataMap();
+                            _JobDataMap.Add("TaskInfo", JsonConvert.SerializeObject(taskInfo));
+                            scheduler.TriggerJob(jobKey, _JobDataMap);
+                        }
                         //即将停止,删除任务并变成停止状态
                         if (taskInfo.State == (int)TaskState.Stopping || taskInfo.State == (int)TaskState.Stopped)
                         {
@@ -112,11 +119,12 @@ namespace AWen.TaskManager.Services.Core
                             .WithIdentity("TriggerName." + taskInfo.TaskId, "TriggerGroup." + taskInfo.TaskId)
                             .WithDescription(taskInfo.Description)//任务描述
                             //FirstRunTime 就按照这个时间直接，否则立刻执行
-                            .StartAt(taskInfo.FirstRunTime.HasValue?taskInfo.FirstRunTime.Value:DateTime.Now)
+                            .StartAt(taskInfo.FirstRunTime.HasValue ? taskInfo.FirstRunTime.Value : DateTime.Now)
                             .WithPriority(taskInfo.Priority + 5)//5是trigger默认优先级
                             //.StartNow()
                             .WithCronSchedule(taskInfo.CronExpression)
                             .Build();
+
                         scheduler.ScheduleJob(job, trigger);
                         addFlag = true;
                     }
@@ -152,7 +160,7 @@ namespace AWen.TaskManager.Services.Core
             {
                 TaskId = taskInfo.TaskId,
                 TaskName = taskInfo.TaskName,
-                ExecutionDuration=0,
+                ExecutionDuration = 0,
                 CreatedDateTime = DateTime.Now,
                 ExecutionTime = DateTime.Now,
                 RunLog = runLog

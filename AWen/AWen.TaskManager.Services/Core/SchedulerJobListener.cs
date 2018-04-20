@@ -34,72 +34,89 @@ namespace AWen.TaskManager.Services.Core
 
         public void JobWasExecuted(IJobExecutionContext context, JobExecutionException jobException)
         {
-            DateTime NextFireTimeUtc = TimeZoneInfo.ConvertTimeFromUtc(context.NextFireTimeUtc.Value.DateTime, TimeZoneInfo.Local);
-            DateTime FireTimeUtc = TimeZoneInfo.ConvertTimeFromUtc(context.FireTimeUtc.Value.DateTime, TimeZoneInfo.Local);
-
-            double TotalSeconds = context.JobRunTime.TotalSeconds;
-
-            TB_TM_TaskInfo taskInfo = null;
-            string LogContent = string.Empty;
-            if (context.MergedJobDataMap != null)
+            try
             {
+                //DateTime? NextFireTimeUtc = TimeZoneInfo.ConvertTimeFromUtc(context.NextFireTimeUtc.Value.DateTime, TimeZoneInfo.Local);
+                //DateTime? FireTimeUtc = TimeZoneInfo.ConvertTimeFromUtc(context.FireTimeUtc.Value.DateTime, TimeZoneInfo.Local);
+                DateTime? NextFireTimeUtc = null;
+                if (context.NextFireTimeUtc.HasValue)
+                    NextFireTimeUtc = context.NextFireTimeUtc.Value.DateTime;
+                DateTime? FireTimeUtc = null;
+                if (context.NextFireTimeUtc.HasValue)
+                    FireTimeUtc = context.FireTimeUtc.Value.DateTime;
 
-                if (context.MergedJobDataMap.ContainsKey("TaskInfo"))
-                   taskInfo = JsonConvert.DeserializeObject<TB_TM_TaskInfo>(context.MergedJobDataMap.GetString("TaskInfo"));
+                double TotalSeconds = context.JobRunTime.TotalSeconds;
 
-                if(taskInfo!=null)
+                TB_TM_TaskInfo taskInfo = null;
+                string LogContent = string.Empty;
+                if (context.MergedJobDataMap != null)
                 {
-                    System.Text.StringBuilder log = new System.Text.StringBuilder();
-                    int i = 0;
-                    foreach (var item in context.MergedJobDataMap)
+                    if (context.MergedJobDataMap.ContainsKey("TaskInfo"))
+                        taskInfo = JsonConvert.DeserializeObject<TB_TM_TaskInfo>(context.MergedJobDataMap.GetString("TaskInfo"));
+
+                    if (taskInfo != null)
                     {
-                        string key = item.Key;
-                        if (key.StartsWith("Extend_"))
+                        System.Text.StringBuilder log = new System.Text.StringBuilder();
+                        int i = 0;
+                        foreach (var item in context.MergedJobDataMap)
                         {
-                            if (i > 0)
+                            string key = item.Key;
+                            if (key.StartsWith("Extend_"))
                             {
-                                log.Append(",");
+                                if (i > 0)
+                                {
+                                    log.Append(",");
+                                }
+                                log.AppendFormat("{0}:{1}", item.Key, item.Value);
+                                i++;
                             }
-                            log.AppendFormat("{0}:{1}", item.Key, item.Value);
-                            i++;
                         }
+                        if (i > 0)
+                        {
+                            LogContent = string.Concat("[", log.ToString(), "]");
+                        }
+                        TaskInfoService _TaskInfoService = new TaskInfoService();
+                        TaskLogService _TaskLogService = new TaskLogService();
+                        taskInfo = _TaskInfoService.GetModel(taskInfo.TaskId);
+                        taskInfo.LastRunTime = FireTimeUtc;
+                        taskInfo.NextRunTime = NextFireTimeUtc;
+                        taskInfo.RunCount = taskInfo.RunCount + 1;
+                        if (taskInfo.ImmedRun == 1)//立刻运行
+                        {
+                            LogContent = "(本次是立刻运行)" + LogContent;
+                            taskInfo.ImmedRun = 0;
+                        }
+
+                        _TaskInfoService.Update(taskInfo);
+                        _TaskLogService.Add(new TaskManager.Core.Model.TB_TM_TaskLog()
+                        {
+                            TaskId = taskInfo.TaskId,
+                            TaskName = taskInfo.TaskName,
+                            CreatedDateTime = DateTime.Now,
+                            ExecutionTime = FireTimeUtc,
+                            ExecutionDuration = TotalSeconds,
+                            RunLog = LogContent
+                        });
                     }
-                    if (i > 0)
-                    {
-                        LogContent = string.Concat("[", log.ToString(), "]");
-                    }
-                    TaskInfoService _TaskInfoService = new TaskInfoService();
-                    TaskLogService _TaskLogService = new TaskLogService();
-                    taskInfo = _TaskInfoService.GetModel(taskInfo.TaskId);
-                    taskInfo.LastRunTime = FireTimeUtc;
-                    taskInfo.NextRunTime = NextFireTimeUtc;
-                    taskInfo.RunCount = taskInfo.RunCount + 1;
-                    _TaskInfoService.Update(taskInfo);
-                    _TaskLogService.Add(new TaskManager.Core.Model.TB_TM_TaskLog()
-                    {
-                        TaskId = taskInfo.TaskId,
-                        TaskName = taskInfo.TaskName,
-                        CreatedDateTime = DateTime.Now,
-                        ExecutionTime = FireTimeUtc,
-                        ExecutionDuration = TotalSeconds,
-                        RunLog = LogContent
-                    });
                 }
-               
+                //if (jobException != null)
+                //{
+                //    LogContent = LogContent + " EX:" + jobException.ToString();
+                //    new TaskLogService().Add(new TaskManager.Core.Model.TB_TM_TaskLog()
+                //    {
+                //        TaskId = Convert.ToInt32(TaskId),
+                //        TaskName = TaskName,
+                //        CreatedDateTime = DateTime.Now,
+                //        ExecutionTime = FireTimeUtc,
+                //        ExecutionDuration = TotalSeconds,
+                //        RunLog = LogContent
+                //    });
+                //}
             }
-            //if (jobException != null)
-            //{
-            //    LogContent = LogContent + " EX:" + jobException.ToString();
-            //    new TaskLogService().Add(new TaskManager.Core.Model.TB_TM_TaskLog()
-            //    {
-            //        TaskId = Convert.ToInt32(TaskId),
-            //        TaskName = TaskName,
-            //        CreatedDateTime = DateTime.Now,
-            //        ExecutionTime = FireTimeUtc,
-            //        ExecutionDuration = TotalSeconds,
-            //        RunLog = LogContent
-            //    });
-            //}
+            catch (Exception ex)
+            {
+                //错误日志
+            }
         }
 
         public string Name
