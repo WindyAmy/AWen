@@ -16,16 +16,11 @@ namespace AWen.Framework.Interface.NullImpl
 {
     public class NullRepository<T, PKey> : IRepository<T, PKey> where T : class
     {
-        public bool Add(T entity)
-        {
-            //do nothing
-            return false;
-        }
 
-        public bool AddBatch(System.Collections.Generic.IEnumerable<T> entitys)
+        public PKey Add(T entity)
         {
             //do nothing
-            return false;
+            return default(PKey);
         }
 
         public bool Update(T entity)
@@ -34,7 +29,7 @@ namespace AWen.Framework.Interface.NullImpl
             return false;
         }
 
-        public bool Update(System.Linq.Expressions.Expression<System.Func<T, bool>> func)
+        public bool Update(string strWhere, object parameters)
         {
             //do nothing
             return false;
@@ -46,7 +41,7 @@ namespace AWen.Framework.Interface.NullImpl
             return false;
         }
 
-        public bool Delete(System.Linq.Expressions.Expression<System.Func<T, bool>> func)
+        public bool Delete(string strWhere, object parameters)
         {
             //do nothing
             return false;
@@ -58,7 +53,7 @@ namespace AWen.Framework.Interface.NullImpl
             return null;
         }
 
-        public T Get(System.Linq.Expressions.Expression<System.Func<T, bool>> func)
+        public T Get(string strWhere, object parameters)
         {
             //do nothing
             return null;
@@ -70,19 +65,20 @@ namespace AWen.Framework.Interface.NullImpl
             return null;
         }
 
-        public System.Collections.Generic.IEnumerable<T> GetList(System.Linq.Expressions.Expression<System.Func<T, bool>> where = null, System.Linq.Expressions.Expression<System.Func<T, bool>> order = null)
+        public System.Collections.Generic.IEnumerable<T> GetList(string strWhere, object parameters)
         {
             //do nothing
             return null;
         }
 
-        public System.Tuple<int, System.Collections.Generic.IEnumerable<T>> GetPage(int pageNum, int rowsNum, System.Linq.Expressions.Expression<System.Func<T, bool>> where = null, System.Linq.Expressions.Expression<System.Func<T, bool>> order = null)
+        public System.Collections.Generic.IEnumerable<T> GetPage(int pageNum, int rowsNum, string strWhere, string orderBy, object parameters, out int countNum)
         {
+            countNum = 0;
             //do nothing
             return null;
         }
 
-        public long Count(System.Linq.Expressions.Expression<System.Func<T, bool>> where = null)
+        public int Count(string strWhere, object parameters)
         {
             //do nothing
             return 0;

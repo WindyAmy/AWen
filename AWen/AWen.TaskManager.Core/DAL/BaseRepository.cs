@@ -1,6 +1,7 @@
 ﻿using AWen.TaskManager.Core.Common;
 using AWen.TaskManager.Core.Interface;
 using Dapper;
+
 /********************************************************************
  * 命名空间: AWen.TaskManager.Core.DAL
 
@@ -16,9 +17,7 @@ using Dapper;
 *********************************************************************/
 
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
-using System.Data.Common;
 
 namespace AWen.TaskManager.Core.DAL
 {
@@ -157,5 +156,4 @@ namespace AWen.TaskManager.Core.DAL
 
         #endregion 成员方法
     }
-
 }

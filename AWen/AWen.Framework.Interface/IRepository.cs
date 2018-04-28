@@ -14,34 +14,31 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 
 namespace AWen.Framework.Interface
 {
     public interface IRepository<T, PKey> where T : class
     {
-        bool Add(T entity);
-
-        bool AddBatch(IEnumerable<T> entitys);
+        PKey Add(T entity);
 
         bool Update(T entity);
 
-        bool Update(Expression<Func<T, bool>> func);
+        bool Update(string strWhere, object parameters);
 
         bool Delete(PKey key);
 
-        bool Delete(Expression<Func<T, bool>> func);
+        bool Delete(string strWhere, object parameters);
 
         T Get(PKey key);
 
-        T Get(Expression<Func<T, bool>> func);
+        T Get(string strWhere, object parameters);
 
         IEnumerable<T> GetAll();
 
-        IEnumerable<T> GetList(Expression<Func<T, bool>> where = null, Expression<Func<T, bool>> order = null);
+        IEnumerable<T> GetList(string strWhere, object parameters);
 
-        Tuple<int, IEnumerable<T>> GetPage(int pageNum, int rowsNum, Expression<Func<T, bool>> where = null, Expression<Func<T, bool>> order = null);
+        IEnumerable<T> GetPage(int pageNum, int rowsNum, string strWhere, string orderBy, object parameters, out int countNum);
 
-        long Count(Expression<Func<T, bool>> where = null);
+        int Count(string strWhere, object parameters);
     }
 }

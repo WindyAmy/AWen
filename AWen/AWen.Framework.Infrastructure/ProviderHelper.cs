@@ -26,6 +26,7 @@ namespace AWen.Framework.Infrastructure
         static ProviderHelper()
         {
             var builder = new ContainerBuilder();
+         
             builder.RegisterType<NullLogger>().As<ILogger>();
             builder.RegisterGeneric(typeof(NullCache<>)).As(typeof(ICache<>));
             builder.RegisterGeneric(typeof(HttpRuntimeCache<>)).As(typeof(ICache<>));
